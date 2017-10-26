@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SuperCalculator</string>
+    <string name="app_name">Super Calculatora</string>
     <string name="deleteBtn"><![CDATA[<-]]></string>
     <string name="addBtn">+</string>
     <string name="sevenBtn">7</string>
@@ -19,5 +19,5 @@
     <string name="divBtn">/</string>
     <string name="acBtn">AC</string>
     <string name="equalBtn">=</string>
-    <string name="resultTextView">-123456789.123</string>
+    <string name="resultTextView">0</string>
 </resources>
