@@ -34,6 +34,9 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
     // Data
     private double mAccumulator;
     private char mOp;
+    private boolean pulsado;
+    private boolean pulsarIgual;
+    private double controlador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,9 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
         mAccumulator = 0;
         mOp = 0;
         resultTextView.setText("0");
+        pulsado = false;
+        pulsarIgual = false;
+        controlador = 0;
     }
 
     /**
@@ -159,19 +165,30 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
     private void makeOperation() {
         double secondNumber = Double.parseDouble(resultTextView.getText().toString());
         double total = 0;
+        if (!pulsarIgual) {
+            controlador = secondNumber;
+        }
+        if (pulsarIgual) {
+            mAccumulator = controlador;
+        }
+
 
         switch (mOp) {
             case '+':
                 total = mAccumulator + secondNumber;
+                pulsarIgual = true;
                 break;
             case '-':
                 total = mAccumulator - secondNumber;
+                pulsarIgual = true;
                 break;
             case '*':
                 total = mAccumulator * secondNumber;
+                pulsarIgual = true;
                 break;
             case '/':
                 total = mAccumulator / secondNumber;
+                pulsarIgual = true;
                 break;
             default:
         }
@@ -188,8 +205,7 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
     private void applyOp(Button button) {
         mOp = button.getText().toString().charAt(0);
         mAccumulator = Double.parseDouble(resultTextView.getText().toString());
-
-        resultTextView.setText("0");
+        pulsado = true;
     }
 
     private void deleteNumber() {
@@ -197,16 +213,8 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
 
         if (actualNumber.length() == 1 || actualNumber.length() == 2 && Integer.parseInt(actualNumber) < 0) {
             resultTextView.setText("0");
-        } else {
-            if (actualNumber.charAt(actualNumber.length() - 2) != '.') {
-                resultTextView.setText(
-                        actualNumber.substring(0, actualNumber.length() - 1)
-                );
-            } else {
-                resultTextView.setText(
-                        actualNumber.substring(0, actualNumber.length() - 2)
-                );
-            }
+        } else if (!resultTextView.getText().toString().equals("0")) {
+            resultTextView.setText(resultTextView.getText().subSequence(0, resultTextView.getText().length() - 1) + "");
 
         }
     }
@@ -220,20 +228,18 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void changeSign() {
-        String actualNumber = resultTextView.getText().toString();
+        int actualNumber = Integer.parseInt(resultTextView.getText().toString());
+        actualNumber*=-1;
+        resultTextView.setText(String.valueOf(actualNumber));
 
-        if (!actualNumber.equals("0")) {
-            if (actualNumber.charAt(0) == '-') {
-                actualNumber = actualNumber.substring(1);
-            } else {
-                actualNumber = '-' + actualNumber;
-            }
-            resultTextView.setText(actualNumber);
-        }
+
     }
 
 
     private void readNumber(Button button) {
+        if (pulsado) {
+            resultTextView.setText("");
+        }
         String digit = button.getText().toString();
         String actualNumber = resultTextView.getText().toString();
         boolean intNumber = (actualNumber.indexOf('.') == -1) ? true : false;
@@ -246,17 +252,12 @@ public class CalcActivity extends AppCompatActivity implements View.OnClickListe
                 resultTextView.setText(digit);
             } else {
                 resultTextView.setText(
-                        resultTextView.getText().toString() + digit
-                );
+                        resultTextView.getText().toString() + digit);
             }
-
-            if (resultTextView.getText().toString().equals("0") && mOp == '/') {
-                equalBtn.setEnabled(false);
-            } else {
-                equalBtn.setEnabled(true);
-            }
+        } else {
+            resultTextView.setText(
+                    resultTextView.getText().toString() + digit);
         }
-
-
+        pulsado = false;
     }
 }
